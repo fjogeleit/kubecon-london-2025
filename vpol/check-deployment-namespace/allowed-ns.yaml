@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  list: dev,test,stage
+kind: ConfigMap
+metadata:
+  name: allowed-ns
+  namespace: default
