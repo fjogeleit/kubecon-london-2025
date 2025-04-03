@@ -1,0 +1,20 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: check-deployment-image-registry
+spec:
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   []
+      apiVersions: [v1]
+      operations:  [CREATE, UPDATE]
+      resources:   [pods]
+  variables:
+    - name: images
+      expression: >-
+        object.spec.containers.map(container, imagedata.Get(container.image))
+  validations:
+    - expression: >-
+        variables.images.all(image, image.registry == "ghcr.io")
+      messageExpression: >-
+        "Images should be loaded from ghcr.io"
